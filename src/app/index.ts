@@ -1,2 +1,4 @@
+export {ApplicationComponent} from "./app.component";
 export {environment} from './environment';
-export {LearnNgcliAppComponent} from './learn-ngcli.component';
+
+
