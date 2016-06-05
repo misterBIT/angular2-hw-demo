@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter, OnInit, Input} from '@angular/core';
+import {Component, Output, EventEmitter, OnChanges, Input} from '@angular/core';
 import {UserService} from "./shared/user.service";
 import {User} from "./user.model";
 import {Observable} from 'rxjs/Observable';
@@ -8,7 +8,8 @@ import {Observable} from 'rxjs/Observable';
   moduleId: module.id,
   selector: 'users-list',
   template: `
-  <div>
+  <div class="row" *ngIf="users.length">
+  <h1>List Users</h1>
     <ul class="usersList">
       <li *ngFor="let user of users">
         {{user.username}}
@@ -16,15 +17,13 @@ import {Observable} from 'rxjs/Observable';
     </ul>
   </div>`
 })
-export class UsersListComponent implements OnInit {
-  users:User[];
-  @Input() private refreshList:Observable<any>;
+export class UsersListComponent implements OnChanges {
+  users:User[] = [];
+  @Input() private refreshList;
 
-  ngOnInit() {
-    if (this.refreshList && this.refreshList.subscribe) {
-      this.refreshList.subscribe(()=> {
-        this.getUsers();
-      });
+  ngOnChanges(change) {
+    if (change.refreshList) {
+      this.getUsers();
     }
   }
 

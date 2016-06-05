@@ -8,9 +8,10 @@ import {UsersListComponent} from "./users-list.component";
   providers : [UserService],
   directives: [UserFormComponent, UsersListComponent],
   selector  : 'demo-app',
-  template  : `
+  template  : `<div class="container">
   <user-form (userSaved)="onUserSaved($event)"></user-form>
-  <users-list [refreshList]="loadUsers$"></users-list>`
+  <users-list [refreshList]="loadUsers$ |async"></users-list>
+  </div>`
 })
 export class ApplicationComponent {
   loadUsers$ = new EventEmitter();
