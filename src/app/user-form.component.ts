@@ -1,6 +1,7 @@
 import {Component, Output, EventEmitter} from '@angular/core';
 import {ControlGroup, Validators, Control, FormBuilder} from '@angular/common';
 import {UserService} from "./shared/user.service";
+import {UsernameValidator} from "./unique.validator";
 @Component({
   moduleId: module.id,
   selector: 'user-form',
@@ -49,7 +50,7 @@ export class UserFormComponent {
 
   constructor(private serverService:UserService, private builder:FormBuilder) {
 
-    this.name = new Control('', Validators.compose([Validators.required, Validators.minLength(2), Validators.pattern('[a-zA-Z].{2,}')]));
+    this.name = new Control('', Validators.compose([Validators.required, Validators.minLength(2), Validators.pattern('[a-zA-Z].{2,}'),UsernameValidator.checkUsername]));
     this.email = new Control('', Validators.required);
     this.password = new Control('', Validators.compose([Validators.required, Validators.minLength(6)]));
 
