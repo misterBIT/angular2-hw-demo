@@ -5,7 +5,6 @@ import {Observable} from 'rxjs/Observable';
 
 
 @Component({
-  moduleId: module.id,
   selector: 'users-list',
   template: `
   <div class="row" *ngIf="users.length">

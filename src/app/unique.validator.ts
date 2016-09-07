@@ -1,31 +1,33 @@
-import {Http, HTTP_PROVIDERS} from '@angular/http';
-import {ReflectiveInjector} from '@angular/core'
-import {Control} from '@angular/common';
+import {} from '@angular/http';
+import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/switchMap';
+import {Http} from "@angular/http";
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class UsernameValidator {
-  static checkUsername(control:Control) {
-    // Manually inject Http
-    let injector = ReflectiveInjector.resolveAndCreate([HTTP_PROVIDERS]);
-    let http = injector.get(Http);
+	constructor(private http: Http) {
+		this.validate = this.validate.bind(this); // fix outside invocation
+	}
 
-    // Return an observable with null if the
-    // username or email doesn't yet exist, or
-    // an objet with the rejetion reason if they do
-    return new Observable((obs:any) => {
-      control
-        .valueChanges
-        .debounceTime(400)
-        .switchMap(value => http.get('http://localhost:3003/data/user').map(res =>res.json()))
-        .subscribe(data => {
-          if (Array.isArray(data) && data.indexOf(control.value))
-            obs.next({uniqueUsername: true});
-          else {
-            obs.next(null);
-          }
-          obs.complete();
-        });
-    });
-  }
+	validate(control: FormControl) {
+		// Return an observable with null if the
+		// username or email doesn't yet exist, or
+		// an object with the rejection reason if they do
+		return new Observable((obs: any) => {
+			control
+				.valueChanges
+				.debounceTime(400)
+				.switchMap(value => this.http.get('http://localhost:3003/data/user').map(res =>res.json()))
+				.subscribe(data => {
+					if (Array.isArray(data) && data.map(user => user.username).indexOf(control.value) !== -1) {
+						obs.next({uniqueUsername: true});
+					} else {
+						obs.next(null);
+					}
+					obs.complete();
+				});
+		});
+	}
 }
